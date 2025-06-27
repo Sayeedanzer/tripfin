@@ -17,7 +17,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.trip.fin"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973" // ✅ Required NDK version for all plugins
+    ndkVersion = "27.0.12077973" // ✅ Required
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -40,11 +40,10 @@ android {
         create("release") {
             keyAlias = keystoreProperties.getProperty("keyAlias") ?: "upload"
             keyPassword = keystoreProperties.getProperty("keyPassword") ?: "tripfin"
-            storeFile = file(keystoreProperties.getProperty("storeFile") ?: "android/app/upload-keystore.jks")
+            storeFile = file("android/app/" + (keystoreProperties.getProperty("storeFile") ?: "upload-keystore.jks"))
             storePassword = keystoreProperties.getProperty("storePassword") ?: "tripfin"
         }
     }
-
 
     buildTypes {
         getByName("release") {
