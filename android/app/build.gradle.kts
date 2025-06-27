@@ -38,14 +38,13 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as? String ?: "upload"
-            keyPassword = keystoreProperties["keyPassword"] as? String ?: "tripfin"
-            val storeFilePath = keystoreProperties["storeFile"] as? String ?: "android/app/upload-keystore.jks"
-            storeFile = rootProject.file(storeFilePath)
-            storePassword = keystoreProperties["storePassword"] as? String ?: "tripfin"
+            keyAlias = "upload"
+            keyPassword = "tripfin"
+            storeFile =
+                file("E:\\Flutter\\tripfin\\android\\app\\upload-keystore.jks")
+            storePassword = "tripfin"
         }
     }
-
 
 
 
