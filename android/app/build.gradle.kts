@@ -40,11 +40,11 @@ android {
         create("release") {
             keyAlias = keystoreProperties.getProperty("keyAlias") ?: "upload"
             keyPassword = keystoreProperties.getProperty("keyPassword") ?: "tripfin"
-            storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
-                ?: file("upload-keystore.jks")
+            storeFile = file(keystoreProperties.getProperty("storeFile") ?: "android/app/upload-keystore.jks")
             storePassword = keystoreProperties.getProperty("storePassword") ?: "tripfin"
         }
     }
+
 
     buildTypes {
         getByName("release") {
