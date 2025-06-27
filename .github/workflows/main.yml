@@ -37,6 +37,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Decode Keystore from Secret
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
+
       - name: Build AAB
         run: flutter build appbundle --release
 
