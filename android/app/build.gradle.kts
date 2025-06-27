@@ -40,9 +40,8 @@ android {
         create("release") {
             keyAlias = keystoreProperties.getProperty("keyAlias") ?: "upload"
             keyPassword = keystoreProperties.getProperty("keyPassword") ?: "tripfin"
-            storeFile = rootProject.file(
-                keystoreProperties.getProperty("storeFile") ?: "E:\\Flutter\\tripfin\\android\\app\\upload-keystore.jks"
-            )
+            storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+                ?: file("android/app/upload-keystore.jks")
             storePassword = keystoreProperties.getProperty("storePassword") ?: "tripfin"
         }
     }
