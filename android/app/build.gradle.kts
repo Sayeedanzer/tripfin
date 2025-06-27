@@ -40,7 +40,7 @@ android {
         create("release") {
             keyAlias = keystoreProperties.getProperty("keyAlias") ?: "upload"
             keyPassword = keystoreProperties.getProperty("keyPassword") ?: "tripfin"
-            storeFile = rootProject.file("android/app/" + (keystoreProperties.getProperty("storeFile") ?: "upload-keystore.jks"))
+            storeFile = rootProject.file("android/app/upload-keystore.jks")
             storePassword = keystoreProperties.getProperty("storePassword") ?: "tripfin"
         }
     }
