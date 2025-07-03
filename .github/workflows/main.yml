@@ -46,6 +46,7 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
 
+      # 🔍 Optional debug to confirm
       - name: Show key.properties
         run: cat android/key.properties
 
@@ -55,16 +56,16 @@ jobs:
 
       # ✅ Build APK (universal for easy install)
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --no-shrink --target-platform android-arm,android-arm64,android-x64
 
-      # ✅ Upload AAB
+      # ✅ Upload AAB artifact
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
           path: build/app/outputs/bundle/release/app-release.aab
 
-      # ✅ Upload APK
+      # ✅ Upload APK artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
