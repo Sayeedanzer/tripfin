@@ -7,12 +7,14 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Load keystore.properties
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("android/key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    println("✅ key.properties loaded for signing.")
 } else {
-    println("⚠️ Warning: android/key.properties not found. Skipping signingConfig.")
+    println("⚠️ key.properties NOT FOUND. Skipping signing config.")
 }
 
 android {
@@ -38,13 +40,11 @@ android {
     }
 
     signingConfigs {
-        create("release").apply {
-            if (keystoreProperties.isNotEmpty()) {
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = rootProject.file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
-            }
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String?
+            keyPassword = keystoreProperties["keyPassword"] as String?
+            storeFile = keystoreProperties["storeFile"]?.let { file(it as String) }
+            storePassword = keystoreProperties["storePassword"] as String?
         }
     }
 
@@ -56,7 +56,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 }
