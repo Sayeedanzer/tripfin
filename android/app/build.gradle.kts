@@ -38,12 +38,16 @@ android {
 
     signingConfigs {
     create("release") {
-        keyAlias = keystoreProperties.getProperty("keyAlias") ?: "upload"
-        keyPassword = keystoreProperties.getProperty("keyPassword") ?: "tripfin"
-        storeFile = rootProject.file(keystoreProperties.getProperty("storeFile") ?: "android/app/upload-keystore.jks")
-        storePassword = keystoreProperties.getProperty("storePassword") ?: "tripfin"
+        keyAlias = (keystoreProperties["keyAlias"] as String?)?.takeIf { it.isNotBlank() } ?: "upload"
+        keyPassword = (keystoreProperties["keyPassword"] as String?)?.takeIf { it.isNotBlank() } ?: "tripfin"
+        storeFile = rootProject.file(
+            (keystoreProperties["storeFile"] as String?)?.takeIf { it.isNotBlank() }
+                ?: "android/app/upload-keystore.jks"
+        )
+        storePassword = (keystoreProperties["storePassword"] as String?)?.takeIf { it.isNotBlank() } ?: "tripfin"
     }
 }
+
 
 
     buildTypes {
