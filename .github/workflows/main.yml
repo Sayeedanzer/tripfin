@@ -1,4 +1,4 @@
-name: Build Android App Bundle
+name: Build Android App Bundle & APK
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build AAB (Flutter)
+    name: Build AAB & APK (Flutter)
     runs-on: ubuntu-latest
 
     steps:
@@ -34,12 +34,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # ✅ Decode keystore
+      # 🔐 Decode keystore
       - name: Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
 
-      # ✅ Create key.properties
+      # 🔑 Create key.properties
       - name: Create key.properties
         run: |
           echo "storeFile=android/app/upload-keystore.jks" > android/key.properties
@@ -47,15 +47,28 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
 
-      # Debug to confirm
+      # 👀 Show key.properties to confirm
       - name: Show key.properties
         run: cat android/key.properties
 
+      # 🚀 Build AAB
       - name: Build AAB
         run: flutter build appbundle --release
 
-      - name: Upload AAB
+      # 🚀 Build APK
+      - name: Build APK
+        run: flutter build apk --release
+
+      # 📦 Upload AAB
+      - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
           path: build/app/outputs/bundle/release/app-release.aab
+
+      # 📦 Upload APK
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
