@@ -10,12 +10,11 @@ plugins {
 // Load keystore.properties
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("android/key.properties")
-val isSigningReady = keystorePropertiesFile.exists()
-if (isSigningReady) {
+if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
     println("✅ Loaded key.properties for signing.")
 } else {
-    println("⚠️ Warning: key.properties not found. Skipping signing.")
+    println("⚠️ Warning: key.properties not found. Will skip signing.")
 }
 
 android {
@@ -42,7 +41,7 @@ android {
 
     signingConfigs {
         create("release") {
-            if (isSigningReady) {
+            if (keystoreProperties.isNotEmpty()) {
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
                 storeFile = rootProject.file(keystoreProperties["storeFile"] as String)
@@ -59,7 +58,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            if (isSigningReady) {
+            if (keystoreProperties.isNotEmpty()) {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
