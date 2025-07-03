@@ -34,11 +34,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # ✅ Decode keystore file
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
 
-      # ✅ Create key.properties
       - name: Create key.properties
         run: |
           echo "storeFile=android/app/upload-keystore.jks" > android/key.properties
@@ -46,26 +44,18 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
 
-      # 🔍 Optional debug to confirm
-      - name: Show key.properties
-        run: cat android/key.properties
-
-      # ✅ Build AAB
       - name: Build AAB
         run: flutter build appbundle --release
 
-      # ✅ Build APK (universal for easy install)
-      - name: Build APK
+      - name: Build UNIVERSAL APK
         run: flutter build apk --release --no-shrink --target-platform android-arm,android-arm64,android-x64
 
-      # ✅ Upload AAB artifact
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
           path: build/app/outputs/bundle/release/app-release.aab
 
-      # ✅ Upload APK artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
