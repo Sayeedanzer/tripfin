@@ -7,13 +7,12 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Load keystore.properties
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("android/key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 } else {
-    throw GradleException("Missing key.properties file at android/key.properties")
+    println("⚠️ Warning: android/key.properties not found. Skipping signingConfig.")
 }
 
 android {
@@ -39,13 +38,13 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"]?.toString() ?: throw GradleException("Missing keyAlias in key.properties")
-            keyPassword = keystoreProperties["keyPassword"]?.toString() ?: throw GradleException("Missing keyPassword in key.properties")
-            storePassword = keystoreProperties["storePassword"]?.toString() ?: throw GradleException("Missing storePassword in key.properties")
-            
-            val storeFilePath = keystoreProperties["storeFile"]?.toString() ?: throw GradleException("Missing storeFile in key.properties")
-            storeFile = rootProject.file("android/$storeFilePath")
+        create("release").apply {
+            if (keystoreProperties.isNotEmpty()) {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = rootProject.file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+            }
         }
     }
 
