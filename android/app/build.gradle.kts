@@ -12,7 +12,6 @@ val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("android/key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-    println("✅ Loaded keystore properties: $keystoreProperties")
 }
 
 android {
@@ -41,7 +40,12 @@ android {
         create("release") {
             keyAlias = keystoreProperties["keyAlias"]?.toString() ?: ""
             keyPassword = keystoreProperties["keyPassword"]?.toString() ?: ""
-            storeFile = rootProject.file(keystoreProperties["storeFile"]?.toString() ?: "")
+            val storeFilePath = keystoreProperties["storeFile"]?.toString()
+            storeFile = if (!storeFilePath.isNullOrEmpty()) {
+                rootProject.file(storeFilePath)
+            } else {
+                rootProject.file("android/app/upload-keystore.jks")
+            }
             storePassword = keystoreProperties["storePassword"]?.toString() ?: ""
         }
     }
