@@ -28,9 +28,6 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Confirm Flutter & Dart version
-        run: flutter --version
-
       - name: Disable Flutter Analytics
         run: flutter config --no-analytics
 
@@ -40,6 +37,12 @@ jobs:
       - name: Decode keystore from secret
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
+
+      - name: Debug secrets
+        run: |
+          echo "KEYSTORE_PASSWORD: '${{ secrets.KEYSTORE_PASSWORD }}'"
+          echo "KEY_ALIAS: '${{ secrets.KEY_ALIAS }}'"
+          echo "KEY_PASSWORD: '${{ secrets.KEY_PASSWORD }}'"
 
       - name: Create key.properties
         run: |
