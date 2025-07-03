@@ -7,7 +7,7 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Load keystore.properties
+// Load key.properties
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("android/key.properties")
 if (keystorePropertiesFile.exists()) {
@@ -17,7 +17,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.trip.fin"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973" // ✅ Required
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -38,15 +38,12 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = "upload"
-            keyPassword = "tripfin"
-            storeFile =
-                file("E:\\Flutter\\tripfin\\android\\app\\upload-keystore.jks")
-            storePassword = "tripfin"
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = rootProject.file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
         }
     }
-
-
 
     buildTypes {
         getByName("release") {
