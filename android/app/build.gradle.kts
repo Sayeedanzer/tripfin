@@ -36,14 +36,13 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            val storeFilePath = keystoreProperties["storeFile"]?.toString()
-            keyAlias = keystoreProperties["keyAlias"]?.toString() ?: "upload"
-            keyPassword = keystoreProperties["keyPassword"]?.toString() ?: "tripfin"
-            storeFile = if (storeFilePath != null) rootProject.file(storeFilePath) else file("android/app/upload-keystore.jks")
-            storePassword = keystoreProperties["storePassword"]?.toString() ?: "tripfin"
-        }
+    create("release") {
+        keyAlias = keystoreProperties["keyAlias"] as String
+        keyPassword = keystoreProperties["keyPassword"] as String
+        storeFile = rootProject.file(keystoreProperties["storeFile"] as String)
+        storePassword = keystoreProperties["storePassword"] as String
     }
+}
 
     buildTypes {
         getByName("release") {
