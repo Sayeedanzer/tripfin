@@ -7,10 +7,12 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Load keystore.properties
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("android/key.properties")
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    println("✅ Loaded keystore properties: $keystoreProperties")
 }
 
 android {
@@ -36,13 +38,13 @@ android {
     }
 
     signingConfigs {
-    create("release") {
-        keyAlias = keystoreProperties["keyAlias"] as String
-        keyPassword = keystoreProperties["keyPassword"] as String
-        storeFile = rootProject.file(keystoreProperties["storeFile"] as String)
-        storePassword = keystoreProperties["storePassword"] as String
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"]?.toString() ?: ""
+            keyPassword = keystoreProperties["keyPassword"]?.toString() ?: ""
+            storeFile = rootProject.file(keystoreProperties["storeFile"]?.toString() ?: "")
+            storePassword = keystoreProperties["storePassword"]?.toString() ?: ""
+        }
     }
-}
 
     buildTypes {
         getByName("release") {
