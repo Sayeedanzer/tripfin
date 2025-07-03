@@ -34,15 +34,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Decode keystore from secret
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
-
-      - name: Debug secrets
-        run: |
-          echo "KEYSTORE_PASSWORD: '${{ secrets.KEYSTORE_PASSWORD }}'"
-          echo "KEY_ALIAS: '${{ secrets.KEY_ALIAS }}'"
-          echo "KEY_PASSWORD: '${{ secrets.KEY_PASSWORD }}'"
+      - name: Decode Keystore from Secret
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
 
       - name: Create key.properties
         run: |
@@ -50,8 +43,9 @@ jobs:
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-          echo "== key.properties =="
-          cat android/key.properties
+
+      - name: Show key.properties for debugging
+        run: cat android/key.properties
 
       - name: Build AAB
         run: flutter build appbundle --release
