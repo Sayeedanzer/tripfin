@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build AAB (Flutter 3.32.5)
+    name: Build AAB (Flutter)
     runs-on: ubuntu-latest
 
     steps:
@@ -34,23 +34,23 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Decode Keystore from Secret
+      - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
 
       - name: Create key.properties
         run: |
-          echo "storeFile=android/app/upload-keystore.jks" > android/key.properties
+          echo "storeFile=app/upload-keystore.jks" > android/key.properties
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
 
-      - name: Show key.properties for debugging
+      - name: Show key.properties for debug
         run: cat android/key.properties
 
       - name: Build AAB
         run: flutter build appbundle --release
 
-      - name: Upload AAB artifact
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
