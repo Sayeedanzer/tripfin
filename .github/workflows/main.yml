@@ -37,28 +37,23 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # 🔐 Decode the keystore file from GitHub secret
-      - name: Decode Keystore from Secret
+      - name: Decode keystore from secret
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
 
-      # 🔑 Write key.properties from GitHub secrets
       - name: Create key.properties
         run: |
           echo "storeFile=android/app/upload-keystore.jks" > android/key.properties
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-
-          echo "== key.properties content =="
+          echo "== key.properties =="
           cat android/key.properties
 
-      # 🚀 Build the app bundle
       - name: Build AAB
         run: flutter build appbundle --release
 
-      # 📦 Upload the built AAB
-      - name: Upload AAB Artifact
+      - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
