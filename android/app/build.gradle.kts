@@ -37,18 +37,14 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            val keyAliasValue = keystoreProperties["keyAlias"]?.toString() ?: throw GradleException("Missing keyAlias in key.properties")
-            val keyPasswordValue = keystoreProperties["keyPassword"]?.toString() ?: throw GradleException("Missing keyPassword in key.properties")
-            val storeFileValue = keystoreProperties["storeFile"]?.toString() ?: throw GradleException("Missing storeFile in key.properties")
-            val storePasswordValue = keystoreProperties["storePassword"]?.toString() ?: throw GradleException("Missing storePassword in key.properties")
-
-            keyAlias = keyAliasValue
-            keyPassword = keyPasswordValue
-            storeFile = rootProject.file(storeFileValue)
-            storePassword = storePasswordValue
-        }
+    create("release") {
+        keyAlias = keystoreProperties.getProperty("keyAlias") ?: "upload"
+        keyPassword = keystoreProperties.getProperty("keyPassword") ?: "tripfin"
+        storeFile = rootProject.file(keystoreProperties.getProperty("storeFile") ?: "android/app/upload-keystore.jks")
+        storePassword = keystoreProperties.getProperty("storePassword") ?: "tripfin"
     }
+}
+
 
     buildTypes {
         getByName("release") {
