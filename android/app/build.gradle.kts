@@ -9,13 +9,14 @@ plugins {
 
 // ✅ Load keystore.properties from inside 'app'
 val keystoreProperties = Properties()
-val keystorePropertiesFile = file("key.properties")  // <== Changed to relative inside app
+val keystorePropertiesFile = file("key.properties")  // relative inside app
 
 if (keystorePropertiesFile.exists()) {
+    println("✅ Found key.properties. Loading...")
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
     println("✅ Loaded key.properties for signing.")
 } else {
-    println("⚠️ Warning: key.properties not found. Will skip signing.")
+    println("⚠️ Warning: key.properties not found in app/. Will skip signing.")
 }
 
 android {
@@ -43,10 +44,11 @@ android {
     signingConfigs {
         create("release") {
             if (keystoreProperties.isNotEmpty()) {
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(keystoreProperties["storeFile"] as String)  // use relative inside app
-                storePassword = keystoreProperties["storePassword"] as String
+                keyAlias = keystoreProperties.getProperty("keyAlias") ?: ""
+                keyPassword = keystoreProperties.getProperty("keyPassword") ?: ""
+                storeFile = file(keystoreProperties.getProperty("storeFile") ?: "")
+                storePassword = keystoreProperties.getProperty("storePassword") ?: ""
+                println("✅ Signing config applied.")
             }
         }
     }
