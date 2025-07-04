@@ -7,9 +7,10 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Load keystore.properties
+// ✅ Load keystore.properties from inside 'app'
 val keystoreProperties = Properties()
-val keystorePropertiesFile = rootProject.file("android/key.properties")
+val keystorePropertiesFile = file("key.properties")  // <== Changed to relative inside app
+
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
     println("✅ Loaded key.properties for signing.")
@@ -44,7 +45,7 @@ android {
             if (keystoreProperties.isNotEmpty()) {
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = rootProject.file(keystoreProperties["storeFile"] as String)
+                storeFile = file(keystoreProperties["storeFile"] as String)  // use relative inside app
                 storePassword = keystoreProperties["storePassword"] as String
             }
         }
