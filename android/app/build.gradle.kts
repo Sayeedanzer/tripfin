@@ -7,16 +7,16 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// ✅ Load keystore.properties from inside 'app'
+// ✅ Load keystore.properties from inside app directory
 val keystoreProperties = Properties()
-val keystorePropertiesFile = file("key.properties")  // relative inside app
+val keystorePropertiesFile = rootProject.file("app/key.properties")
 
 if (keystorePropertiesFile.exists()) {
     println("✅ Found key.properties. Loading...")
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
     println("✅ Loaded key.properties for signing.")
 } else {
-    println("⚠️ Warning: key.properties not found in app/. Will skip signing.")
+    println("⚠️ key.properties not found. Signing will be skipped.")
 }
 
 android {
@@ -28,7 +28,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
@@ -44,10 +43,10 @@ android {
     signingConfigs {
         create("release") {
             if (keystoreProperties.isNotEmpty()) {
-                keyAlias = keystoreProperties.getProperty("keyAlias") ?: ""
-                keyPassword = keystoreProperties.getProperty("keyPassword") ?: ""
-                storeFile = file(keystoreProperties.getProperty("storeFile") ?: "")
-                storePassword = keystoreProperties.getProperty("storePassword") ?: ""
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = file("app/${keystoreProperties["storeFile"]}")
+                storePassword = keystoreProperties["storePassword"] as String
                 println("✅ Signing config applied.")
             }
         }
